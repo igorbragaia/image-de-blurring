@@ -20,8 +20,6 @@ def gaussian_kernel(k_len = 10, sigma = 3):
     d_mat[k_len//2, k_len//2] = 1
     return fi.gaussian_filter(d_mat, sigma)
 
-# plt.imshow(gaussian_kernel(), cmap=cm.Greys_r)
-# plt.show()
 im = Image.open('assets/pb.png')
 im_grey = im.convert('L') # convert the image to *greyscale*
 im_array = np.array(im_grey)
@@ -70,5 +68,5 @@ def lst_sq_grad(x, A=G, b=flat_blurry_image):
 optim_output = optimize.minimize(lst_sq, np.zeros(N**2), method='L-BFGS-B', jac=lst_sq_grad, options={'disp':True})
 
 final_image = optim_output['x']
-plt.imshow(final_image, cmap=cm.Greys_r)
+plt.imshow(final_image.reshape((N,)*2), cmap=cm.Greys_r)
 plt.savefig('assets/deblurring_deblurred_image.png')
