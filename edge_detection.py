@@ -1,8 +1,8 @@
 from matplotlib import pyplot as plt
 from scipy.signal import convolve2d
-import numpy as np
 import matplotlib.cm as cm
 from PIL import Image
+import numpy as np
 
 
 im = Image.open('assets/pb.png')

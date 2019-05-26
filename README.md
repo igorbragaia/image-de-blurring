@@ -61,7 +61,7 @@ plt.imshow(result, cmap=cm.Greys_r)
 plt.savefig('assets/edge_after.png')
 ```
 
-Data a imagem a seguir,
+Dada a imagem a seguir,
 
 ![edge_before](assets/edge_before.png)
 
@@ -69,6 +69,74 @@ Para a detecção de bordas a partir de gradientes na vertical, obtém-se
 
 ![edge_after](assets/edge_after.png)
 
+#### Borrar/suavizar imagem por meio de máscaras Gaussianas 2D
+
+No processamento de imagens, um desfoque gaussiano é o resultado do desfoque de uma imagem por uma função gaussiana. É um efeito amplamente utilizado para reduzir o ruído da imagem e reduzir os detalhes. O efeito visual desta técnica de desfoque é um desfoque suave semelhante ao da visualização da imagem através de uma tela translúcida. O alisamento gaussiano também é usado como um estágio de pré-processamento em algoritmos de visão computacional para melhorar as estruturas de imagem em diferentes escalas - veja a representação do espaço de escala e a implementação do espaço de escala.
+
+Matematicamente, aplicar um desfoque gaussiano a uma imagem é o mesmo que convolver a imagem com uma função gaussiana. Como a transformada de Fourier de um Gauss é outro Gaussiano, a aplicação de um desfoque gaussiano tem o efeito de reduzir os componentes de alta frequência da imagem; um borrão gaussiano é, portanto, um filtro de baixa passagem.
+
+##### Aplicação de máscara Gaussiana
+
+Uma máscara gaussiana é obtida a partir da discretização de uma distribuição normal 2D, dado desvio padrão e largura da máscara, considerando média zero da distribuição. O código em Python que produz uma máscara gaussiana (kernel), segue abaixo
+
+```python
+from matplotlib import pyplot as plt
+import scipy.ndimage.filters as fi
+import matplotlib.cm as cm
+from PIL import Image
+import numpy as np
+
+def gaussian_kernel(k_len, sigma):
+    d_mat = np.zeros((k_len, k_len))
+    d_mat[k_len//2, k_len//2] = 1
+    return fi.gaussian_filter(d_mat, sigma)
+
+kernel = gaussian_kernel(9, 5)
+
+plt.imshow(kernel, cmap=cm.Greys_r)
+plt.savefig('assets/kernel.png')
+```
+
+Para desvio padrão = 5 e largura da máscara = 9, tem-se a máscara abaixo
+
+![edge_after](assets/readme_kernel.png)
+
+A aplicação da máscara gaussiana, por sua vez, produz o efeito de imagem borrada. Assim, o código em Python que realiza a convolução entre uma imagem e a máscara gaussiana segue abaixo
+
+```python
+from matplotlib import pyplot as plt
+from scipy.signal import convolve2d
+import scipy.ndimage.filters as fi
+import matplotlib.cm as cm
+from PIL import Image
+import numpy as np
+
+
+def gaussian_kernel(k_len, sigma):
+    d_mat = np.zeros((k_len, k_len))
+    d_mat[k_len//2, k_len//2] = 1
+    return fi.gaussian_filter(d_mat, sigma)
+
+
+im = Image.open('assets/pb.png')
+im_grey = im.convert('L') # convert the image to *greyscale*
+im_array = np.array(im_grey)
+
+kernel = gaussian_kernel(9, 5)
+
+blurry_image = convolve2d(im_array, kernel)
+
+plt.imshow(blurry_image, cmap=cm.Greys_r)
+plt.savefig('assets/readme_deblurring_blurry_image.png')
+```
+
+Assim, dada a imagem a seguir,
+
+![edge_before](assets/deblurring_before.png)
+
+Após a aplicação do filtro gaussiano, tem-se a imagem desfocada a seguir
+
+![edge_after](assets/readme_deblurring_blurry_image.png)
 
 ### Referências
 
