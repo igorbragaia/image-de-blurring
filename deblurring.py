@@ -71,12 +71,15 @@ def lst_sq_grad(x, A=G, b=flat_blurry_image):
 x = np.zeros(N ** 2)
 prev_error = 0
 diff = 10000
-while diff > 5000:
+i = 0
+while diff > 1000:
     x -= 1e3*lst_sq_grad(x, G, flat_blurry_image)
     error = lst_sq(x, G, flat_blurry_image)
     diff = abs(error - prev_error)
     prev_error = error
     print(diff)
+    i += 1
+    print(i)
 
 plt.imshow(x.reshape((N,)*2), cmap=cm.Greys_r)
 plt.savefig('assets2/deblurring_deblurred_image.png')
